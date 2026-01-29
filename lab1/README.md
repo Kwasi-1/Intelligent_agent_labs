@@ -107,6 +107,9 @@ sudo prosodyctl start
 sudo prosodyctl check
 ```
 
+### Issue: "Invalid certificate trust chain"
+**Solution:** This is already fixed in the code! The agent disables SSL verification for local development with `agent.verify_security = False`. This is normal for local testing.
+
 ## Lab 1 Deliverables Checklist
 
 - [ ] Screenshot of running agent in GitHub Codespaces

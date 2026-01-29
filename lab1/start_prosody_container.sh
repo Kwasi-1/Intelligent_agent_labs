@@ -11,8 +11,13 @@ sudo prosodyctl stop 2>/dev/null || true
 sleep 1
 
 # Ensure directories exist with proper permissions
-sudo mkdir -p /var/run/prosody /var/log/prosody
-sudo chmod 755 /var/run/prosody /var/log/prosody
+sudo mkdir -p /var/run/prosody /var/log/prosody /var/lib/prosody
+sudo chmod 755 /var/run/prosody /var/log/prosody /var/lib/prosody
+
+# Generate self-signed certificates (safe for local dev) BEFORE start
+sudo prosodyctl cert generate localhost 2>/dev/null || true
+sudo prosodyctl cert generate agents.localhost 2>/dev/null || true
+sudo chown -R prosody:prosody /var/lib/prosody 2>/dev/null || true
 
 # Start using service command (works in containers)
 echo "Starting Prosody with service command..."

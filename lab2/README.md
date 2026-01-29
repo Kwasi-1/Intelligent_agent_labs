@@ -216,6 +216,9 @@ sudo service prosody start
 sudo service prosody status
 ```
 
+### Issue: "Invalid certificate trust chain"
+**Solution:** Already fixed! The code includes `sensor_agent.verify_security = False` for local development. This is standard for testing environments.
+
 ### Issue: Module not found errors
 **Solution:** Ensure you're in the correct directory
 ```bash

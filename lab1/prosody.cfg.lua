@@ -13,7 +13,6 @@ modules_enabled = {
     -- Generally required
     "roster"; -- Allow users to have a roster
     "saslauth"; -- Authentication
-    "tls"; -- Add support for secure TLS on c2s/s2s connections
     "dialback"; -- s2s dialback support
     "disco"; -- Service discovery
     
@@ -27,12 +26,7 @@ modules_enabled = {
     
     -- Admin interfaces
     "admin_adhoc"; -- Allows administration via an XMPP client that supports ad-hoc commands
-    "admin_telnet"; -- Open telnet console interface on localhost port 5582
-    
-    -- HTTP modules
-    "bosh"; -- Enable BOSH clients, aka "Jabber over HTTP"
-    "websocket"; -- XMPP over WebSockets
-    
+
     -- Other specific functionality
     "ping"; -- Replies to XMPP pings with pongs
     "register"; -- Allow users to register on this server using a client and change passwords
@@ -54,6 +48,17 @@ allow_registration = true
 -- For local development - allow all connections
 c2s_require_encryption = false
 s2s_require_encryption = false
+s2s_secure_auth = false
+
+-- Allow insecure connections for local testing
+allow_unencrypted_plain_auth = true
+
+ssl = {
+    key = "/var/lib/prosody/localhost.key";
+    certificate = "/var/lib/prosody/localhost.crt";
+    protocol = "tlsv1";
+    ciphers = "ALL";
+}
 
 -- Logging configuration
 log = {
@@ -68,3 +73,17 @@ VirtualHost "localhost"
 -- Component for agent communication (optional)
 Component "agents.localhost"
     component_secret = "agent_secret_123"
+    ssl = {
+        key = "/var/lib/prosody/agents.localhost.key";
+        certificate = "/var/lib/prosody/agents.localhost.crt";
+        protocol = "tlsv1";
+        ciphers = "ALL";
+    }
+
+-- Limit ports to avoid conflicts in Codespaces
+c2s_ports = { 5222 }
+s2s_ports = {}
+legacy_ssl_ports = {}
+http_ports = {}
+https_ports = {}
+component_ports = {}

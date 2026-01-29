@@ -77,6 +77,10 @@ async def main():
     
     # Create and start the agent
     agent = BasicAgent(AGENT_JID, AGENT_PASSWORD)
+    
+    # Disable SSL verification for local development
+    agent.verify_security = False
+    
     await agent.start()
     
     print("Agent started successfully!")

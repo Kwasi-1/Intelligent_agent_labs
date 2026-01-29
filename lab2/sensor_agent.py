@@ -223,6 +223,12 @@ async def main():
     # Create and start the sensor agent
     sensor_agent = SensorAgent(AGENT_JID, AGENT_PASSWORD)
     
+    # Initialize event_log before connection attempt (in case of failure)
+    sensor_agent.event_log = []
+    
+    # Disable SSL verification for local development
+    sensor_agent.verify_security = False
+    
     try:
         await sensor_agent.start()
         print("✓ SensorAgent started successfully!\n")
@@ -242,9 +248,10 @@ async def main():
         # Display summary
         print(f"\n📊 MONITORING SESSION SUMMARY")
         print("-" * 70)
-        print(f"Total Events Logged: {len(sensor_agent.event_log)}")
+        event_count = len(sensor_agent.event_log) if hasattr(sensor_agent, 'event_log') else 0
+        print(f"Total Events Logged: {event_count}")
         
-        if sensor_agent.event_log:
+        if hasattr(sensor_agent, 'event_log') and sensor_agent.event_log:
             print(f"\nRecent Events:")
             for log in sensor_agent.event_log[-5:]:  # Show last 5
                 print(f"  - {log['event_id']}: {log['disaster_type']} "
