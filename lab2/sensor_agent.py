@@ -8,6 +8,7 @@ and reports detected events.
 """
 
 import asyncio
+import os
 from spade.agent import Agent
 from spade.behaviour import PeriodicBehaviour
 from datetime import datetime
@@ -213,21 +214,22 @@ async def main():
     print("=" * 70)
     print()
     
-    # Agent credentials
-    AGENT_JID = "sensor1@localhost"
-    AGENT_PASSWORD = "sensor123"
+    # Agent credentials (can be provided via environment variables)
+    AGENT_JID = os.getenv("XMPP_JID", "sensor1@localhost")
+    AGENT_PASSWORD = os.getenv("XMPP_PASSWORD", "sensor123")
+    VERIFY_SECURITY = os.getenv("VERIFY_SECURITY", "false").lower() in ("1", "true", "yes")
     
     print(f"Starting SensorAgent: {AGENT_JID}")
     print("Press Ctrl+C to stop monitoring\n")
     
     # Create and start the sensor agent
     sensor_agent = SensorAgent(AGENT_JID, AGENT_PASSWORD)
-    
+
     # Initialize event_log before connection attempt (in case of failure)
     sensor_agent.event_log = []
-    
-    # Disable SSL verification for local development
-    sensor_agent.verify_security = False
+
+    # Control SSL verification via environment variable
+    sensor_agent.verify_security = VERIFY_SECURITY
     
     try:
         await sensor_agent.start()
@@ -235,9 +237,9 @@ async def main():
         
         # Run for a reasonable time to demonstrate (60 seconds)
         # In production, this would run indefinitely
-        print("Monitoring environment... (will run for 60 seconds)")
+        print(f"Monitoring environment... (will run for 60 seconds) - verify_security={VERIFY_SECURITY}")
         print("You can press Ctrl+C anytime to stop\n")
-        
+
         await asyncio.sleep(60)
         
     except KeyboardInterrupt:
