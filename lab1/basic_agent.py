@@ -10,7 +10,6 @@ This script demonstrates a basic SPADE agent with:
 """
 
 import asyncio
-import os
 from spade.agent import Agent
 from spade.behaviour import PeriodicBehaviour
 from spade.message import Message
@@ -64,11 +63,9 @@ async def main():
     """
     Main function to create and run the agent
     """
-    # Agent credentials (can be provided via environment variables)
-    AGENT_JID = os.getenv("XMPP_JID", "agent1@localhost")
-    AGENT_PASSWORD = os.getenv("XMPP_PASSWORD", "agent123")
-    # VERIFY_SECURITY: set to "true" to enable cert verification (recommended for remote servers)
-    VERIFY_SECURITY = os.getenv("VERIFY_SECURITY", "false").lower() in ("1", "true", "yes")
+    # Agent credentials (must match XMPP server accounts)
+    AGENT_JID = "agent1@localhost"
+    AGENT_PASSWORD = "agent123"
     
     print("\n" + "=" * 70)
     print(" LAB 1: BASIC SPADE AGENT DEMONSTRATION")
@@ -80,9 +77,9 @@ async def main():
     
     # Create and start the agent
     agent = BasicAgent(AGENT_JID, AGENT_PASSWORD)
-
-    # Control SSL verification via environment variable
-    agent.verify_security = VERIFY_SECURITY
+    
+    # Disable SSL verification for local development
+    agent.verify_security = False
     
     await agent.start()
     
