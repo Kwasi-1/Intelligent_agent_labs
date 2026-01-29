@@ -18,11 +18,17 @@ Intelligent_agent_labs/
 │   ├── install_dependencies.sh
 │   ├── setup_xmpp.sh
 │   ├── prosody.cfg.lua
+│   ├── start_prosody_container.sh  # Container-friendly startup
 │   ├── README.md
 │   └── MANUAL_INSTALL.md
-├── lab2/              # Perception and Environment Modeling (Coming soon)
+├── lab2/              # Perception and Environment Modeling ✓
+│   ├── disaster_environment.py    # Environment simulation
+│   ├── sensor_agent.py            # SensorAgent implementation
+│   ├── test_lab2.sh              # Quick test script
+│   └── README.md
 ├── docs/              # Documentation and reports
-│   └── Lab1_Report.md
+│   ├── Lab1_Report.md
+│   └── Lab2_Report.md
 └── requirements.txt   # Python dependencies
 ```
 
@@ -57,11 +63,42 @@ python3 lab1/verify_environment.py
 python3 lab1/basic_agent.py
 ```
 
+## Getting Started with Lab 2
+
+### Quick Overview
+Lab 2 implements agent perception with:
+- Disaster environment simulation
+- SensorAgent that monitors conditions every 5 seconds
+- Event detection and logging
+- Analysis of disaster severity and impact
+
+### Quick Start
+```bash
+# Test the environment simulation
+python3 lab2/disaster_environment.py
+
+# Start Prosody if needed
+sudo service prosody start
+
+# Run the SensorAgent
+python3 lab2/sensor_agent.py
+```
+
+### What You'll See
+The SensorAgent will:
+- Monitor 8 different locations
+- Detect disasters (Flood, Fire, Earthquake, Storm, Landslide)
+- Analyze severity levels and estimate response resources
+- Log all events to JSON file
+- Display comprehensive environmental readings
+
+See [lab2/README.md](lab2/README.md) for detailed instructions.
+
 ## Lab Progress
 
 - [x] **Lab 1:** Environment and Agent Platform Setup ✓
-- [ ] **Lab 2:** Perception and Environment Modeling (Next)
-- [ ] **Lab 3:** Goals, Events, and Reactive Behavior
+- [x] **Lab 2:** Perception and Environment Modeling ✓
+- [ ] **Lab 3:** Goals, Events, and Reactive Behavior (Next)
 - [ ] **Lab 4:** Agent Communication using FIPA-ACL
 - [ ] **Lab 5:** Coordination and Task Delegation
 - [ ] **Lab 6-13:** Advanced topics and system integration
