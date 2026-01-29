@@ -10,6 +10,7 @@ This script demonstrates a basic SPADE agent with:
 """
 
 import asyncio
+import os
 from spade.agent import Agent
 from spade.behaviour import PeriodicBehaviour
 from spade.message import Message
@@ -63,9 +64,11 @@ async def main():
     """
     Main function to create and run the agent
     """
-    # Agent credentials (must match XMPP server accounts)
-    AGENT_JID = "agent1@localhost"
-    AGENT_PASSWORD = "agent123"
+    # Agent credentials (can be provided via environment variables)
+    AGENT_JID = os.getenv("XMPP_JID", "agent1@localhost")
+    AGENT_PASSWORD = os.getenv("XMPP_PASSWORD", "agent123")
+    # VERIFY_SECURITY: set to "true" to enable cert verification (recommended for remote servers)
+    VERIFY_SECURITY = os.getenv("VERIFY_SECURITY", "false").lower() in ("1", "true", "yes")
     
     print("\n" + "=" * 70)
     print(" LAB 1: BASIC SPADE AGENT DEMONSTRATION")
@@ -77,21 +80,43 @@ async def main():
     
     # Create and start the agent
     agent = BasicAgent(AGENT_JID, AGENT_PASSWORD)
+
+    # Control SSL verification via environment variable
+    agent.verify_security = VERIFY_SECURITY
     
-    # Disable SSL verification for local development
-    agent.verify_security = False
-    
-    await agent.start()
-    
-    print("Agent started successfully!")
-    print("Waiting for agent to run...\n")
-    
-    # Keep the agent running
     try:
-        # Run for 20 seconds to demonstrate periodic behavior
-        await asyncio.sleep(20)
-    except KeyboardInterrupt:
-        print("\n\nShutting down agent...")
+        # Try to start with timeout
+        await asyncio.wait_for(agent.start(), timeout=10.0)
+        
+        print("Agent started successfully!")
+        print("Waiting for agent to run...\n")
+        
+        # Keep the agent running
+        try:
+            # Run for 20 seconds to demonstrate periodic behavior
+            await asyncio.sleep(20)
+        except KeyboardInterrupt:
+            print("\n\nShutting down agent...")
+        
+    except asyncio.TimeoutError:
+        print("\n⚠️  ERROR: Connection timeout!")
+        print("\nPossible causes:")
+        print("  1. XMPP server (Prosody) is not running")
+        print("  2. Incorrect server address or port")
+        print("  3. Network connectivity issues")
+        print("\nSolutions:")
+        print("  1. Start Prosody: cd lab1 && bash start_prosody_container.sh")
+        print("  2. Use the simplified version: python3 lab1/basic_agent_simple.py")
+        print("\n" + "="*70)
+        return
+    except Exception as e:
+        print(f"\n⚠️  ERROR: Failed to start agent: {e}")
+        print(f"\nError type: {type(e).__name__}")
+        print("\nSolutions:")
+        print("  1. Check if Prosody is running: bash lab1/start_prosody_container.sh")
+        print("  2. Try the simplified version: python3 lab1/basic_agent_simple.py")
+        print("\n" + "="*70)
+        return
     
     # Stop the agent
     await agent.stop()
