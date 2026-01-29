@@ -1,0 +1,11 @@
+# Python requirements for Intelligent Agent Labs
+# Course: DCIT 403 - Designing Intelligent Agent
+
+# Core agent framework
+spade>=3.2.0
+
+# Async HTTP support
+aiohttp>=3.8.0
+
+# Additional utilities
+asyncio-mqtt>=0.16.0
