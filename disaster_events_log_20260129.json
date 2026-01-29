@@ -1,98 +1,98 @@
 [
   {
-    "timestamp": "2026-01-29T12:48:53.734426",
+    "timestamp": "2026-01-29T13:01:21.295361",
     "event_id": "EVT-0001",
-    "disaster_type": "Storm",
-    "severity": "LOW",
-    "severity_level": 1,
+    "disaster_type": "Landslide",
+    "severity": "CATASTROPHIC",
+    "severity_level": 5,
     "location": {
-      "name": "Downtown District 1",
-      "latitude": 6.149519768511157,
-      "longitude": -0.2478771773029398
+      "name": "Riverside Area 2",
+      "latitude": 10.217532984409942,
+      "longitude": 0.5288375545443396
     },
     "impact": {
-      "affected_population": 388,
-      "casualties": 14,
-      "infrastructure_damage": 21.87310712975514
+      "affected_population": 2415,
+      "casualties": 599,
+      "infrastructure_damage": 50.60144737955131
     },
     "environmental_conditions": {
-      "temperature": 28.1,
-      "humidity": 63.6,
-      "wind_speed": 13.2,
-      "rainfall": 0.3
+      "temperature": 25.9,
+      "humidity": 57.5,
+      "wind_speed": 12.6,
+      "rainfall": 9.2
     },
-    "description": "Severe storm with high winds affecting Downtown District 1"
+    "description": "Landslide reported in Riverside Area 2 due to soil saturation"
   },
   {
-    "timestamp": "2026-01-29T12:49:13.755022",
+    "timestamp": "2026-01-29T13:01:26.301601",
     "event_id": "EVT-0002",
     "disaster_type": "Landslide",
     "severity": "CATASTROPHIC",
     "severity_level": 5,
     "location": {
-      "name": "Mountain Valley 7",
-      "latitude": 8.23910226523283,
-      "longitude": 0.8222271377712991
+      "name": "Highland Region 3",
+      "latitude": 9.931682407663633,
+      "longitude": 0.536053497071908
     },
     "impact": {
-      "affected_population": 895,
-      "casualties": 151,
+      "affected_population": 1705,
+      "casualties": 129,
       "infrastructure_damage": 100
     },
     "environmental_conditions": {
-      "temperature": 27.8,
-      "humidity": 63.2,
-      "wind_speed": 18.2,
-      "rainfall": 18.6
+      "temperature": 26.4,
+      "humidity": 60.5,
+      "wind_speed": 13.3,
+      "rainfall": 11.3
     },
-    "description": "Landslide reported in Mountain Valley 7 due to soil saturation"
+    "description": "Landslide reported in Highland Region 3 due to soil saturation"
   },
   {
-    "timestamp": "2026-01-29T12:49:23.766000",
+    "timestamp": "2026-01-29T13:01:41.313560",
     "event_id": "EVT-0003",
-    "disaster_type": "Earthquake",
-    "severity": "MODERATE",
-    "severity_level": 2,
+    "disaster_type": "Flood",
+    "severity": "CATASTROPHIC",
+    "severity_level": 5,
     "location": {
-      "name": "Coastal Zone 4",
-      "latitude": 10.40361120785497,
-      "longitude": -2.8077962086729498
+      "name": "Residential Suburb 6",
+      "latitude": 7.385213551046376,
+      "longitude": -1.5247035887536438
     },
     "impact": {
-      "affected_population": 810,
-      "casualties": 37,
-      "infrastructure_damage": 45.33855427024446
+      "affected_population": 670,
+      "casualties": 146,
+      "infrastructure_damage": 100
     },
     "environmental_conditions": {
-      "temperature": 28.2,
-      "humidity": 62.2,
-      "wind_speed": 17.5,
-      "rainfall": 16.5
+      "temperature": 27.9,
+      "humidity": 55.7,
+      "wind_speed": 15.0,
+      "rainfall": 9.9
     },
-    "description": "Earthquake detected in Coastal Zone 4, magnitude 4"
+    "description": "Heavy flooding in Residential Suburb 6 due to continuous rainfall"
   },
   {
-    "timestamp": "2026-01-29T12:49:38.782382",
+    "timestamp": "2026-01-29T13:01:51.324484",
     "event_id": "EVT-0004",
     "disaster_type": "Flood",
-    "severity": "HIGH",
-    "severity_level": 3,
+    "severity": "LOW",
+    "severity_level": 1,
     "location": {
-      "name": "Industrial Park 5",
-      "latitude": 5.0213503589742725,
-      "longitude": 0.9161561491441823
+      "name": "Port Area 8",
+      "latitude": 7.150346160611532,
+      "longitude": 0.2083372816074709
     },
     "impact": {
-      "affected_population": 558,
-      "casualties": 45,
-      "infrastructure_damage": 88.65221592803385
+      "affected_population": 489,
+      "casualties": 9,
+      "infrastructure_damage": 14.630526401056104
     },
     "environmental_conditions": {
-      "temperature": 26.5,
-      "humidity": 65.1,
-      "wind_speed": 15.6,
-      "rainfall": 19.0
+      "temperature": 29.3,
+      "humidity": 50.8,
+      "wind_speed": 14.7,
+      "rainfall": 9.8
     },
-    "description": "Heavy flooding in Industrial Park 5 due to continuous rainfall"
+    "description": "Heavy flooding in Port Area 8 due to continuous rainfall"
   }
 ]
