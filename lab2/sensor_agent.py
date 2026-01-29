@@ -1,39 +1,40 @@
 """
-Lab 2: SensorAgent - Perception and Environment Modeling
+Lab 2: SensorAgent - Perception and Environment Modeling (Simplified Version)
 Course: DCIT 403 - Designing Intelligent Agent
 Project: Disaster Response & Relief Coordination System
 
-This module implements a SensorAgent that monitors the disaster environment
-and reports detected events.
+This is a simplified version that runs WITHOUT requiring an XMPP server.
+It demonstrates perception, environment modeling, and event detection.
 """
 
 import asyncio
-import os
-from spade.agent import Agent
-from spade.behaviour import PeriodicBehaviour
 from datetime import datetime
 from disaster_environment import DisasterEnvironment, DisasterEvent
 import json
 
 
-class EnvironmentMonitorBehaviour(PeriodicBehaviour):
+class EnvironmentMonitorBehaviour:
     """
     Periodic behavior that monitors environmental conditions
     and detects disaster events
     """
+    
+    def __init__(self, agent, period=5.0):
+        self.agent = agent
+        self.period = period
+        self.running = False
+        self.cycle_count = 0
+        self.events_detected = 0
     
     async def on_start(self):
         """Called when the behaviour starts"""
         print("\n" + "=" * 70)
         print(" SENSOR AGENT - ENVIRONMENT MONITORING STARTED")
         print("=" * 70)
-        print(f"Agent: {self.agent.jid}")
+        print(f"Agent: {self.agent.name}")
         print(f"Monitoring interval: {self.period} seconds")
         print(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print("=" * 70 + "\n")
-        
-        self.cycle_count = 0
-        self.events_detected = 0
     
     async def run(self):
         """
@@ -122,12 +123,32 @@ class EnvironmentMonitorBehaviour(PeriodicBehaviour):
             print(f"      - Strong winds present additional hazard")
         if readings['temperature'] > 35:
             print(f"      - High temperature - heat stress risk for responders")
+    
+    async def start(self):
+        """Start the behavior loop"""
+        self.running = True
+        await self.on_start()
+        
+        while self.running:
+            await self.run()
+            await asyncio.sleep(self.period)
+    
+    def stop(self):
+        """Stop the behavior"""
+        self.running = False
 
 
-class SensorAgent(Agent):
+class SensorAgent:
     """
     Intelligent agent that perceives and monitors disaster environment
+    (Simplified standalone version)
     """
+    
+    def __init__(self, name):
+        self.name = name
+        self.behaviours = []
+        self.event_log = []
+        self.environment = None
     
     async def setup(self):
         """
@@ -136,7 +157,7 @@ class SensorAgent(Agent):
         print("\n" + "=" * 70)
         print(" SENSOR AGENT INITIALIZATION")
         print("=" * 70)
-        print(f"Agent JID: {self.jid}")
+        print(f"Agent Name: {self.name}")
         print(f"Agent Type: Environmental Sensor & Disaster Detector")
         print(f"Initialization Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print("=" * 70)
@@ -150,12 +171,9 @@ class SensorAgent(Agent):
         for i, loc in enumerate(self.environment.locations, 1):
             print(f"   {i}. {loc}")
         
-        # Initialize event log
-        self.event_log = []
-        
         # Add monitoring behavior (runs every 5 seconds)
-        monitor_behaviour = EnvironmentMonitorBehaviour(period=5.0)
-        self.add_behaviour(monitor_behaviour)
+        monitor_behaviour = EnvironmentMonitorBehaviour(self, period=5.0)
+        self.behaviours.append(monitor_behaviour)
         
         print(f"\n✓ Monitoring behavior activated (5-second intervals)")
         print(f"✓ Agent is operational and monitoring environment\n")
@@ -198,9 +216,21 @@ class SensorAgent(Agent):
         except Exception as e:
             print(f"   ⚠️  Error saving log: {e}")
     
-    def get_event_log(self):
-        """Return the event log"""
-        return self.event_log
+    async def start(self):
+        """Start the agent and all its behaviors"""
+        await self.setup()
+        
+        # Start all behaviors
+        tasks = []
+        for behaviour in self.behaviours:
+            tasks.append(asyncio.create_task(behaviour.start()))
+        
+        return tasks
+    
+    async def stop(self):
+        """Stop the agent"""
+        for behaviour in self.behaviours:
+            behaviour.stop()
 
 
 async def main():
@@ -208,70 +238,43 @@ async def main():
     Main function to run the SensorAgent
     """
     print("\n" + "=" * 70)
-    print(" LAB 2: PERCEPTION AND ENVIRONMENT MODELING")
+    print(" LAB 2: PERCEPTION AND ENVIRONMENT MODELING (Simplified Version)")
     print(" Course: DCIT 403 - Designing Intelligent Agent")
     print(" Project: Disaster Response & Relief Coordination System")
     print("=" * 70)
+    print("\nThis version runs WITHOUT requiring an XMPP server")
     print()
     
-    # Agent credentials (can be provided via environment variables)
-    AGENT_JID = os.getenv("XMPP_JID", "sensor1@localhost")
-    AGENT_PASSWORD = os.getenv("XMPP_PASSWORD", "sensor123")
-    VERIFY_SECURITY = os.getenv("VERIFY_SECURITY", "false").lower() in ("1", "true", "yes")
+    agent_name = "SensorAgent-1"
     
-    print(f"Starting SensorAgent: {AGENT_JID}")
+    print(f"Starting SensorAgent: {agent_name}")
     print("Press Ctrl+C to stop monitoring\n")
     
     # Create and start the sensor agent
-    sensor_agent = SensorAgent(AGENT_JID, AGENT_PASSWORD)
-
-    # Initialize event_log before connection attempt (in case of failure)
-    sensor_agent.event_log = []
-
-    # Control SSL verification via environment variable
-    sensor_agent.verify_security = VERIFY_SECURITY
+    sensor_agent = SensorAgent(agent_name)
     
     try:
-        # Try to start with timeout
-        await asyncio.wait_for(sensor_agent.start(), timeout=10.0)
+        tasks = await sensor_agent.start()
         print("✓ SensorAgent started successfully!\n")
         
         # Run for a reasonable time to demonstrate (60 seconds)
-        # In production, this would run indefinitely
-        print(f"Monitoring environment... (will run for 60 seconds) - verify_security={VERIFY_SECURITY}")
+        print(f"Monitoring environment... (will run for 60 seconds)")
         print("You can press Ctrl+C anytime to stop\n")
-
+        
         await asyncio.sleep(60)
         
-    except asyncio.TimeoutError:
-        print("\n⚠️  ERROR: Connection timeout!")
-        print("\nPossible causes:")
-        print("  1. XMPP server (Prosody) is not running")
-        print("  2. Incorrect server address or port")
-        print("  3. Network connectivity issues")
-        print("\nSolutions:")
-        print("  1. Start Prosody: cd lab1 && bash start_prosody_container.sh")
-        print("  2. Use the simplified version: python3 lab2/sensor_agent_simple.py")
-        return
     except KeyboardInterrupt:
         print("\n\n" + "=" * 70)
         print(" MONITORING STOPPED BY USER")
         print("=" * 70)
-    except Exception as e:
-        print(f"\n⚠️  ERROR: Failed to start sensor agent: {e}")
-        print(f"\nError type: {type(e).__name__}")
-        print("\nSolutions:")
-        print("  1. Check if Prosody is running: bash lab1/start_prosody_container.sh")
-        print("  2. Try the simplified version: python3 lab2/sensor_agent_simple.py")
-        return
     finally:
         # Display summary
         print(f"\n📊 MONITORING SESSION SUMMARY")
         print("-" * 70)
-        event_count = len(sensor_agent.event_log) if hasattr(sensor_agent, 'event_log') else 0
+        event_count = len(sensor_agent.event_log)
         print(f"Total Events Logged: {event_count}")
         
-        if hasattr(sensor_agent, 'event_log') and sensor_agent.event_log:
+        if sensor_agent.event_log:
             print(f"\nRecent Events:")
             for log in sensor_agent.event_log[-5:]:  # Show last 5
                 print(f"  - {log['event_id']}: {log['disaster_type']} "
@@ -282,6 +285,14 @@ async def main():
         
         # Stop the agent
         await sensor_agent.stop()
+        
+        # Cancel all tasks
+        for task in tasks:
+            task.cancel()
+        
+        # Wait for tasks to complete
+        await asyncio.gather(*tasks, return_exceptions=True)
+        
         print("\n" + "=" * 70)
         print(" SensorAgent stopped successfully")
         print(" Lab 2 demonstration complete!")
